@@ -1,0 +1,9 @@
+# Ignore R data files
+.RData
+.Rhistory
+
+# Ignore large datasets
+Data/Insurance.csv
+
+# Ignore R environment files
+.Rproj.user
