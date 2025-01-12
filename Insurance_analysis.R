@@ -18,6 +18,23 @@ data <- read.csv("Data/Insurance.csv")
 # Display the first few rows to understand the data structure
 head(data)
 
+# Check for missing values
+missing_values <- colSums(is.na(data))
+print("Missing values in each column:")
+print(missing_values)
+
+# Handle missing values (if any)
+# Option 1: Remove rows with missing values
+data <- data %>% na.omit()
+
+# Option 2: Fill missing values with mean/mode (example for numeric columns)
+# data <- data %>%
+#   mutate(
+#     age = ifelse(is.na(age), mean(age, na.rm = TRUE), age),
+#     bmi = ifelse(is.na(bmi), mean(bmi, na.rm = TRUE), bmi),
+#     charges = ifelse(is.na(charges), mean(charges, na.rm = TRUE), charges)
+#   )
+
 # Convert categorical variables to factors
 data <- data %>%
   mutate(
@@ -31,6 +48,7 @@ str(data)
 
 # Summary of the dataset to verify changes
 summary(data)
+
 
 # --------------------------
 # 3. Exploratory Data Analysis (EDA)
