@@ -118,3 +118,50 @@ data_transformed <- data %>%
 # Print the transformed data
 print(head(data_transformed))
 
+# --------------------------
+# 5. Predictive Model Development
+# --------------------------
+
+# Ensure reproducibility
+set.seed(123)
+
+# Split the data into training (80%) and testing (20%) sets
+train_indices <- createDataPartition(data_transformed$charges, p = 0.8, list = FALSE)
+train_data <- data_transformed[train_indices, ]
+test_data <- data_transformed[-train_indices, ]
+
+# Verify the dimensions of the datasets
+cat("Training set dimensions: ", dim(train_data), "\n")
+cat("Testing set dimensions: ", dim(test_data), "\n")
+
+# Build Linear Regression Model
+lm_model <- lm(charges ~ ., data = train_data)
+cat("\nLinear Regression Model Summary:\n")
+print(summary(lm_model))
+
+# Build Random Forest Model
+rf_model <- randomForest(charges ~ ., data = train_data, ntree = 500, importance = TRUE)
+cat("\nRandom Forest Model Summary:\n")
+print(rf_model)
+
+# Build Gradient Boosting Model
+gbm_model <- gbm(
+  charges ~ .,                 # Formula for the model
+  data = train_data,           # Training data
+  distribution = "gaussian",   # For regression
+  n.trees = 500,               # Number of trees
+  interaction.depth = 3,       # Depth of each tree
+  shrinkage = 0.01,            # Learning rate
+  cv.folds = 5,                # Perform 5-fold cross-validation
+  verbose = FALSE              # Suppress detailed output
+)
+
+# Print the best number of trees based on cross-validation
+cat("\nOptimal number of trees based on cross-validation:\n")
+best_iter <- gbm.perf(gbm_model, method = "cv", plot.it = TRUE)
+
+
+# Print a summary of the Gradient Boosting model
+cat("\nGradient Boosting Model Summary:\n")
+print(summary(gbm_model))
+
