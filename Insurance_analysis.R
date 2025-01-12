@@ -98,3 +98,23 @@ ggplot(data, aes(x = smoker, y = charges, fill = smoker)) +
        y = "Charges") +
   scale_fill_manual(values = c("no" = "blue", "yes" = "red")) +
   theme_minimal()
+
+# --------------------------
+# 4. Feature Engineering
+# --------------------------
+
+# Transform categorical variables into dummy variables
+data_transformed <- data %>%
+  mutate(
+    sex_male = ifelse(sex == "male", 1, 0),
+    smoker_yes = ifelse(smoker == "yes", 1, 0),
+    region_northwest = ifelse(region == "northwest", 1, 0),
+    region_northeast = ifelse(region == "northeast", 1, 0),
+    region_southeast = ifelse(region == "southeast", 1, 0),
+    region_southwest = ifelse(region == "southwest", 1, 0)
+  ) %>%
+  select(-sex, -smoker, -region)  # Remove original categorical columns
+
+# Print the transformed data
+print(head(data_transformed))
+
