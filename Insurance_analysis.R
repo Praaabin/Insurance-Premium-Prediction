@@ -31,3 +31,52 @@ str(data)
 
 # Summary of the dataset to verify changes
 summary(data)
+
+# --------------------------
+# 3. Exploratory Data Analysis (EDA)
+# --------------------------
+
+# Pairwise scatter plots
+pairs(data %>% select(age, bmi, children, charges),
+      main = "Pairwise Scatter Plots",
+      col = ifelse(data$smoker == "yes", "red", "blue"),
+      labels = c("Age", "BMI", "Children", "Charges"),  # Add axis labels
+      cex.labels = 1.2,  # Increase label size
+      pch = 16,          # Use solid points
+      cex = 0.8,         # Adjust point size
+      gap = 0.5)         # Add space between plots
+
+# Histogram of the distribution of charges
+ggplot(data, aes(x = charges)) +
+  geom_histogram(binwidth = 2000, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Histogram of Insurance Charges",
+       x = "Charges",
+       y = "Frequency") +
+  theme_minimal()
+
+# Scatter plot of charges vs. age with linear regression line
+ggplot(data, aes(x = age, y = charges)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Scatter Plot of Charges vs. Age with Regression Line",
+       x = "Age",
+       y = "Charges") +
+  theme_minimal()
+
+# Scatter plot of charges vs. BMI with linear regression line
+ggplot(data, aes(x = bmi, y = charges)) +
+  geom_point(alpha = 0.6, color = "darkgreen") +
+  geom_smooth(method = "lm", color = "blue", se = FALSE) +
+  labs(title = "Scatter Plot of Charges vs. BMI with Regression Line",
+       x = "BMI",
+       y = "Charges") +
+  theme_minimal()
+
+# Boxplot of charges vs. smoker
+ggplot(data, aes(x = smoker, y = charges, fill = smoker)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(title = "Boxplot of Charges by Smoking Status",
+       x = "Smoking Status",
+       y = "Charges") +
+  scale_fill_manual(values = c("no" = "blue", "yes" = "red")) +
+  theme_minimal()
