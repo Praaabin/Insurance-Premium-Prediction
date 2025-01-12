@@ -223,3 +223,48 @@ calculate_metrics(test_data$charges, lm_predictions, "Linear Regression")
 calculate_metrics(test_data$charges, rf_predictions, "Random Forest")
 calculate_metrics(test_data$charges, gbm_predictions, "Gradient Boosting")
 
+# --------------------------
+# 7. Determine Significant Factors
+# --------------------------
+
+# 1. Analyse the coefficients from the Linear Regression model and print them
+cat("\nLinear Regression Coefficients:\n")
+print(summary(lm_model)$coefficients)
+
+# 2. Analyse the feature importance from the Random Forest model and print them
+cat("\nRandom Forest Feature Importance:\n")
+importance_rf <- importance(rf_model)
+print(importance_rf)
+
+# 3. Analyse the feature importance scores from Gradient Boosting and print them
+cat("\nGradient Boosting Feature Importance:\n")
+importance_gbm <- summary(gbm_model, n.trees = best_iter)
+print(importance_gbm)
+
+# Convert to a data frame and rename columns
+importance_gbm_df <- as.data.frame(importance_gbm)
+colnames(importance_gbm_df) <- c("Feature", "Importance_Score")
+
+# Visualize feature importance as a bar plot
+ggplot(importance_gbm_df, aes(x = reorder(Feature, Importance_Score), y = Importance_Score)) +
+  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.8) +  # Bar plot
+  coord_flip() +  # Flip axes for better readability
+  labs(
+    title = "Gradient Boosting Feature Importance",
+    subtitle = "Features vs Importance Scores",
+    x = "Features",
+    y = "Importance Score"
+  ) +
+  theme_minimal(base_size = 12) +  # Minimal theme
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),  # Center and bold title
+    plot.subtitle = element_text(hjust = 0.5, size = 10, color = "gray40"),  # Center subtitle
+    axis.title.x = element_text(size = 10, face = "bold"),  # Bold x-axis label
+    axis.title.y = element_text(size = 10, face = "bold"),  # Bold y-axis label
+    axis.text.x = element_text(size = 8),  # Adjust x-axis text size
+    axis.text.y = element_text(size = 8),  # Adjust y-axis text size
+    panel.grid.major = element_line(color = "gray90"),  # Add light grid lines
+    panel.grid.minor = element_blank()  # Remove minor grid lines
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))  # Add padding to y-axis
+
