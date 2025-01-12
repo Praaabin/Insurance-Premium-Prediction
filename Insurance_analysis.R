@@ -165,3 +165,61 @@ best_iter <- gbm.perf(gbm_model, method = "cv", plot.it = TRUE)
 cat("\nGradient Boosting Model Summary:\n")
 print(summary(gbm_model))
 
+# --------------------------
+# 6. Predictive Model Selection
+# --------------------------
+
+# Make predictions for each model
+lm_predictions <- predict(lm_model, newdata = test_data)
+rf_predictions <- predict(rf_model, newdata = test_data)
+gbm_predictions <- predict(gbm_model, newdata = test_data, n.trees = best_iter)
+
+# Combine actual and predicted values for visualization
+lm_results <- data.frame(Actual = test_data$charges, Predicted = lm_predictions)
+rf_results <- data.frame(Actual = test_data$charges, Predicted = rf_predictions)
+gbm_results <- data.frame(Actual = test_data$charges, Predicted = gbm_predictions)
+
+# Visualize predictions for Linear Regression
+ggplot(lm_results, aes(x = Actual, y = Predicted)) +
+  geom_point(color = "green", alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "maroon") +
+  labs(title = "Linear Regression Predictions vs. Actual Values",
+       x = "Actual Charges",
+       y = "Predicted Charges") +
+  theme_minimal(base_size = 14)
+
+# Visualize predictions for Random Forest
+ggplot(rf_results, aes(x = Actual, y = Predicted)) +
+  geom_point(color = "black", alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Random Forest Predictions vs. Actual Values",
+       x = "Actual Charges",
+       y = "Predicted Charges") +
+  theme_minimal(base_size = 14)
+
+# Visualize predictions for Gradient Boosting
+ggplot(gbm_results, aes(x = Actual, y = Predicted)) +
+  geom_point(color = "purple", alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Gradient Boosting Predictions vs. Actual Values",
+       x = "Actual Charges",
+       y = "Predicted Charges") +
+  theme_minimal(base_size = 14)
+
+# Function to calculate RMSE, MAE, and R-squared
+calculate_metrics <- function(actual, predicted, model_name) {
+  rmse_value <- sqrt(mean((actual - predicted)^2))
+  mae_value <- mean(abs(actual - predicted))
+  r_squared_value <- 1 - sum((actual - predicted)^2) / sum((actual - mean(actual))^2)
+
+  cat("\nPerformance Metrics for", model_name, ":\n")
+  cat("  RMSE      :", round(rmse_value, 2), "\n")
+  cat("  MAE       :", round(mae_value, 2), "\n")
+  cat("  R-squared :", round(r_squared_value, 4), "\n")
+}
+
+# Evaluate metrics for each model
+calculate_metrics(test_data$charges, lm_predictions, "Linear Regression")
+calculate_metrics(test_data$charges, rf_predictions, "Random Forest")
+calculate_metrics(test_data$charges, gbm_predictions, "Gradient Boosting")
+
