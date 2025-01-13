@@ -1,6 +1,12 @@
 # --------------------------
-# 1. Load Necessary Libraries
+# 1. Install and Load Necessary Libraries
 # --------------------------
+
+install.packages("tidyverse") # For data manipulation and visualization
+install.packages("caret") # For data splitting
+install.packages("randomForest") # For Random Forest model
+install.packages("gbm") # For Gradient Boosting model
+install.packages("ggplot2") # For data visualization
 
 library(tidyverse)  # For data manipulation and visualization
 library(caret)      # For data splitting
@@ -267,4 +273,5 @@ ggplot(importance_gbm_df, aes(x = reorder(Feature, Importance_Score), y = Import
     panel.grid.minor = element_blank()  # Remove minor grid lines
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))  # Add padding to y-axis
+
 
